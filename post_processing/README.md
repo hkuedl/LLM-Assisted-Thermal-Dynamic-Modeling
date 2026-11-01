@@ -1,87 +1,53 @@
-# OOD event-and-phase post-processing
+# OOD Post-Processing
 
-This directory contains the post-processing workflow used to evaluate fixed
-correction gates and LLM-derived event-and-phase gates. Forecasting models are
-frozen. The code does not train or alter MLP, CNN, GRU, or LSTM checkpoints.
+This directory contains the OOD event-and-phase post-processing workflow used
+in **“Interactive Building Thermal Dynamics Modeling with Large Language
+Models.”** It applies correction gates to frozen forecasting outputs and
+generates the corresponding metrics, tables, and figures.
 
-## Release layout
-
-Place the cloned repository, `Data`, and `Result` at the same level:
-
-```text
-release_root/
-├── Data/
-├── Result/
-└── LLM-Assisted-Thermal-Dynamic-Modeling/
-    └── post_processing/
-```
-
-`Result/` is the complete experimental `Building_Temperature_Final_Results`
-directory renamed for release. The workflow reads:
-
-```text
-Result/OOD/postprocessing/case_manifest.csv
-Result/OOD/postprocessing/run_manifest.csv
-```
-
-Manifest paths should be relative to either `Result/` or the directory that
-contains the manifest. Raw predictions, targets, control priors, and event
-evidence remain in `Result/`; source CSV and IDF files remain in `Data/`.
-
-By default, new public outputs are written to:
-
-```text
-Result/OOD/postprocessing_public/public_prompt/
-```
-
-The default configuration uses ten LLM samples, the public prompt wording,
-all four training quantities, and source labels `OOD-2` through `OOD-5`. These
-source labels correspond to the four OOD scenarios reported in the paper; the
-code does not silently relabel them.
+The workflow uses the `Data` and `Result` folders distributed with the project.
+Place both folders beside the cloned repository as described in the main
+README.
 
 ## Run
 
-The notebook `Run_Postprocessing.ipynb` is the main entry point. Its generation
-switch is off by default.
-
-Equivalent command-line steps are:
+From the `post_processing` directory. LLM generation requires the relevant API
+key to be available in the environment.
 
 ```bash
-# Preview LLM calls. No API request is made.
+# Preview prior generation without making API calls
 python generate_priors.py
 
-# Generate or resume the public mean-10 priors.
+# Generate or resume the LLM priors
 python generate_priors.py --run
 
-# Apply Raw, the 0.05 fixed-gate grid, and the LLM event-and-phase gate.
+# Apply the priors and compute evaluation metrics
 python apply_priors.py
 
-# Create paired summaries and figures.
+# Generate summary tables and figures
 python visualize_results.py
 ```
 
-Saved valid requests are reused when the same command is resumed. If public
-mean-10 priors are already present in the complete `Result/` directory, keep
-generation disabled and run only the offline application and visualization
-steps.
+If the downloaded results already contain the generated priors, the second
+step can be skipped. Outputs are saved under:
 
-For a frozen historical prior set, set `PRIOR_SOURCE='existing'` and point
-`EXISTING_PRIORS` to its directory. Historical experiment directory names are
-not defaults in this release.
+```text
+Result/OOD/postprocessing_public/
+```
 
-## Files
+The same workflow can be run interactively with
+`Run_Postprocessing.ipynb`.
 
-- `prompt.py`: original prompt and the public wording with version labels
-  removed; numerical evidence and output structure are shared.
-- `generate_priors.py`: LLM sampling, validation, caching, and mean aggregation.
-- `apply_priors.py`: deterministic correction operator, gate application, and
-  RMSE/MAE evaluation.
-- `visualize_results.py`: building-equal summaries and standard figures.
-- `Paper_Figures.ipynb`: paper-oriented mean-10 tables and figures.
-- `tests/`: small offline tests for prompt and numerical behavior.
+## Main files
 
-The LLM supplies event strength and phase-local adjustments. The deterministic
-operator supplies correction direction, support, and magnitude limits. For ten
-samples, event gates and phase adjustments are averaged separately and combined
-as `clip(mean(event_gate) + mean(phase_adjustment), 0, 1)`.
+- `generate_priors.py`: generates and caches LLM event-and-phase priors.
+- `apply_priors.py`: applies the correction rules and evaluates predictions.
+- `visualize_results.py`: creates summary tables and figures.
+- `Run_Postprocessing.ipynb`: notebook interface for the complete workflow.
+- `Paper_Figures.ipynb`: paper-oriented tables and visualizations.
 
+## Tests
+
+```bash
+python -m unittest discover -s tests -v
+```
