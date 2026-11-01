@@ -1,0 +1,19 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+*.log
+*.pid
+.ipynb_checkpoints/
+
+# Local credentials
+**/api_key_local.txt
+**/apikey.txt
+.env
+.env.*
+
+# Large release artifacts live beside the repository
+Data/
+Result/
+*.pt
+*.pth
+*.ckpt

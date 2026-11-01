@@ -1,0 +1,97 @@
+ROLE AND TASK
+
+Estimate a physically plausible event_gate for every supplied local
+thermostat-departure event. A deterministic operator already determines when
+the correction acts and its direction; the gate only controls its magnitude.
+Choose a continuous event_gate between 0.00 and 1.00 inclusive, using at most
+two decimal places. Values between the interpretation anchors below are allowed.
+
+After completing that event-level judgment, assign one phase_adjustment to
+each internal amplitude phase. The final phase gate is computed externally as
+clip(event_gate + phase_adjustment, 0, 1). Do not output the final phase gate.
+
+EVENT-LEVEL PHYSICAL PRINCIPLES
+
+1. Evaluate each local event independently. Duration is the main persistence
+   cue: an event lasting roughly five hours or longer is persistent and
+   generally supports a stronger correction; a shorter event generally supports
+   a more conservative correction.
+2. Consider setpoint-shift magnitude and absolute departure dose together with
+   duration. Larger and more sustained departures support stronger correction.
+3. Direction determines whether the physical correction raises or lowers the
+   forecast, not how strong it should be.
+4. Equivalent local events with the same zone and building semantics should
+   receive comparable gates. Use semantic information only as a qualitative
+   modifier; it should not override clear duration and magnitude evidence.
+
+For event_gate, use only event_summary, building context, the frozen semantic
+prior and within-building semantic percentiles. Do not use internal phase
+transitions to revise the event-level judgment. Event and phase IDs are only
+identifiers. Do not compare sibling events, OOD labels or building names as
+evidence.
+
+EVENT-GATE INTERPRETATION
+
+0.00 means no credible additional response, 0.25 weak, 0.50 moderate, 0.75
+strong, and 1.00 nearly complete missing nominal response. Intermediate values
+are allowed.
+
+No unseen temperature, target, residual, hindsight-optimal strength, previous
+method gate or performance metric may be inferred or requested.
+
+PHASE-LEVEL EXTENSION
+
+1. Start every phase_adjustment at 0. A phase adjustment is a local residual
+   relative to the already selected event_gate, not a replacement event gate,
+   response magnitude, temperature or confidence score.
+2. Do not use phase amplitude alone to repeat the event-level duration,
+   magnitude or dose judgment. Apply a nonzero adjustment only when a transition
+   mechanism supports a difference within the same continuous event.
+3. Transient same-direction amplification: when a contiguous phase becomes
+   substantially stronger in the same direction, the nominal correction can
+   increase before the incremental thermal response develops. If the stronger
+   phase is brief relative to the event and zone evidence supports slower
+   response, apply modest downward pressure. Sustained amplification or evidence
+   supporting faster response can justify zero adjustment.
+4. Carryover-aware same-direction attenuation: when a contiguous phase becomes
+   weaker while remaining in the same direction, the nominal correction can
+   shrink while response associated with the stronger preceding phase persists.
+   If continuity, preceding strength and zone inertia support carryover, apply
+   modest upward pressure. Conflicting evidence can justify zero adjustment.
+5. Direction reversals, returns to reference and mixed/non-comparable H/C
+   transitions do not inherit phase-level evidence across the boundary. Keep
+   unsupported adjustments at 0.
+6. Thermal inertia can delay response to amplification and preserve response
+   during attenuation, but it is not a universal upward or downward rule.
+   Other semantic fields are qualitative modifiers only.
+7. These are soft physical priors. Do not force phase ordering. Express weak or
+   conflicting evidence through confidence/reason and adjustments near zero.
+   No weighted-average or event-gate conservation constraint is imposed.
+
+FINAL CHECK
+
+Confirm that event_gate was selected by the event-level evidence and
+anchors before phase reasoning. Confirm that phase_adjustments encode only
+within-event transition effects and that no unobserved response or evaluation
+result was used as fact.
+
+OUTPUT
+
+Return JSON only with root key zone_gate_records, a list containing every
+supplied zone exactly once. Each zone object contains zone and
+event_gate_records. Return every requested event_id exactly once.
+
+Each event record contains only:
+- event_id: supplied integer
+- event_gate: JSON number in [0,1], at most two decimal places
+- confidence: low, medium or high
+- reason: concise event-level duration/magnitude/dose and semantic basis
+- phase_adjustment_records: every requested phase_id exactly once
+
+Each phase-adjustment record contains only:
+- phase_id: supplied integer
+- phase_adjustment: JSON number in [-1,1], at most two decimal places
+- reason: concise transition mechanism, relevant zone modifier and limitation
+
+Do not add Markdown, final phase gates, previous-method comparisons, extra keys,
+zones, events or phases.

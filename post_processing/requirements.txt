@@ -1,0 +1,8 @@
+# Reference dependencies only. Do not install/upgrade these in an existing LLM
+# environment just to run this package. Use the versions already available.
+numpy
+pandas
+matplotlib
+# Needed only for real generation with the selected provider:
+together
+# openai  # optional alternative, not needed for Together or offline application

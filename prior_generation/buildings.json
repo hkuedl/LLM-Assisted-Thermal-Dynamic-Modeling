@@ -1,0 +1,46 @@
+{
+  "buildings": [
+    {
+      "building": "10zone_RetailStripmall_C_1",
+      "csv": "10zone_RetailStripmall_C_1.csv",
+      "idf": "10zone_RetailStripmall_C_1.idf",
+      "tag": "fulldata"
+    },
+    {
+      "building": "18zone_OfficeMedium_B_1",
+      "csv": "18zone_OfficeMedium_B_1.csv",
+      "idf": "18zone_OfficeMedium_B_1.idf",
+      "tag": "fulldata"
+    },
+    {
+      "building": "22zone_HotelLarge_B_1",
+      "csv": "22zone_HotelLarge_B_1.csv",
+      "idf": "22zone_HotelLarge_B_1.idf",
+      "tag": "fulldata"
+    },
+    {
+      "building": "25zone_SchoolPrimary_1",
+      "csv": "25zone_SchoolPrimary_1.csv",
+      "idf": "25zone_SchoolPrimary_1.idf",
+      "tag": "fulldata"
+    },
+    {
+      "building": "46zone_SchoolSecondary_1",
+      "csv": "46zone_SchoolSecondary_1.csv",
+      "idf": "46zone_SchoolSecondary_1.idf",
+      "tag": "fulldata"
+    },
+    {
+      "building": "67zone_HotelSmall_1",
+      "csv": "67zone_HotelSmall_1.csv",
+      "idf": "67zone_HotelSmall_1.idf",
+      "tag": "fulldata"
+    },
+    {
+      "building": "118zone_Healthcare_1",
+      "csv": "118zone_Healthcare_1.csv",
+      "idf": "118zone_Healthcare_1.idf",
+      "tag": "fulldata"
+    }
+  ]
+}
