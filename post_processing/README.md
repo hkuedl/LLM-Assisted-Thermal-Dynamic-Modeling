@@ -39,23 +39,6 @@ all four training quantities, and source labels `OOD-2` through `OOD-5`. These
 source labels correspond to the four OOD scenarios reported in the paper; the
 code does not silently relabel them.
 
-## Environment
-
-```bash
-python -m pip install -r requirements.txt
-```
-
-The paths are derived from the release layout. For another layout, set:
-
-```bash
-export BUILDING_DATA_ROOT=/path/to/Data
-export BUILDING_RESULT_ROOT=/path/to/Result
-```
-
-LLM generation reads `TOGETHER_API_KEY` (or `OPENAI_API_KEY`). During local
-testing, an ignored `api_key_local.txt` beside `generate_priors.py` is also
-accepted. Do not commit that file.
-
 ## Run
 
 The notebook `Run_Postprocessing.ipynb` is the main entry point. Its generation
@@ -102,5 +85,3 @@ operator supplies correction direction, support, and magnitude limits. For ten
 samples, event gates and phase adjustments are averaged separately and combined
 as `clip(mean(event_gate) + mean(phase_adjustment), 0, 1)`.
 
-`legacy` target matching reproduces the saved metric convention. `exact_air`
-is a separately labelled evaluation and must not be merged with legacy metrics.
